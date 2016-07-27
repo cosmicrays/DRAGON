@@ -1,0 +1,148 @@
+<?xml version="1.0" ?>
+<Output> 
+    <partialstore /> <!-- The code writes the spectrum at Sun position for each species on a FITS file (optional) -->
+    <fullstore />    <!-- The code writes the complete (r,z,p) grid of propagated particles for each species on a FITS file (optional) -->
+    <feedback value="2" />
+</Output>
+<Grid type="3D">          <!-- Number of spatial dimensions. Options: 2D, 3D -->
+    <Observer> 
+	<x value="8.3" /> 
+ 	<y value="0.0" />
+	<z value="0.0" />
+    </Observer> 
+    <Rmax value="12" />   <!-- Maximum value of Galactocentric radius (R) in kpc -->
+    <L value="4" />       <!-- Halo size in kpc. The Galaxy extends from -L to L -->
+    <DimX value="81" />   <!-- Number of grid points along x - TO BE USED ONLY IN 3D MODE -->
+    <DimY value="81" />   <!-- Number of grid points along y - TO BE USED ONLY IN 3D MODE -->
+    <DimZ value="11" />   <!-- Number of grid points along vertical axis --> 
+    <Ekmin value="1." />       <!-- Miminum kinetic energy of propagated particles in GeV -->
+    <Ekmax value="1000." />   <!-- Maximum kinetic energy of propagated particles in GeV --> 
+    <Ekfactor value="1.25" />  <!-- Logaritmic spacing of energy grid. E[i] = exp( ln(Ekmin) + i ln(Ekfactor) ) -->
+    <NuclearChain>
+        <Zmax value="1" />    <!-- Maximum atomic number of propagated particles -->
+        <Zmin value="1" />     <!-- Minimum atomic number of propagated particles -->
+        <PropLepton />         <!-- The code propagates leptonic species (optional) -->
+        <!-- PropExtraComponent /--> <!-- The code propagates an extra primary leptonic component with different spectrum (optional) -->
+    </NuclearChain>
+</Grid>
+<Algorithm>
+    <OpSplit>
+        <!-- The code starts with dt = Dtmax; after Nrept iterations, the code rescales dt by the factor Dtfactor; this process is iterated until Dtmin is reached --> 
+        <Nrept value="20" />          <!-- Number of iterations before changing timestep -->
+        <Dtfactor value=".25" />      <!-- Rescaling factor of the time step     -->
+        <Dtmin value="0.001" />       <!-- Minimum time step in Myr -->
+        <Dtmax value="64." />         <!-- Maximum time step in Myr -->
+    </OpSplit>
+</Algorithm>
+<Galaxy>
+   <Gas type="Galprop" />   <!-- Gas model; options: BronfFerr, NS, Galprop, Uniform --> 
+<!-- ************************** -->
+   <SNR type="Ferriere" />  <!-- Source distribution for the primary components; options: Lorimer, Galprop, Ferriere, OneRing, Rings -->
+   <!-- The source is a ring between RingMin and RingMax
+   <SNR type = "OneRing">
+      <RingMin value="5." /> 
+      <RingMax value="6." /> 
+   </SNR>
+   --> 
+   <SNR_Extra type="Ferriere" /> <!-- Source distribution for the extra component; options: the same as SNRType  (optional) -->
+<!-- ************************** -->
+    <SpiralArms type="Blasi"> <!-- Optional block - TO BE USED ONLY IN 3D MODE -->
+      <SpiralWidth value="0.3" /> <!-- Width of spiral arm in kpc -->
+      <NumArms value="4" />  <!-- Number of spiral arms --> 
+      <K_1 value="4.25" />
+      <r0_1 value="3.48" />
+      <theta0_1 value="0" />
+      <K_2 value="4.25" />
+      <r0_2 value="3.48" />
+      <theta0_2 value="3.14" />
+      <K_3 value="4.89" />
+      <r0_3 value="4.90" />
+      <theta0_3 value="2.52" />
+      <K_4 value="4.89" />
+      <r0_4 value="4.90" />
+      <theta0_4 value="-0.62" />
+      <KappaSource value="1" />   <!-- Do you want to apply the spiral arm pattern to the sources? 1=true -->
+      <KappaGasH2  value="0" />   <!-- Do you want to apply the spiral arm pattern to the H2 gas? 1=true -->
+      <KappaGasHI  value="0" />   <!-- Do you want to apply the spiral arm pattern to the HI gas? 1=true -->
+      <KappaGasHII value="0" />   <!-- Do you want to apply the spiral arm pattern to the HII gas? 1=true -->
+      <KappaISRFDust       value="1" /> <!-- Do you want to apply the spiral arm pattern to the ISRF (dust component)?      1=true -->
+      <KappaISRFStarlight  value="1" /> <!-- Do you want to apply the spiral arm pattern to the ISRF (starlight component)? 1=true -->
+   </SpiralArms>
+<!-- ************************** -->
+   <XCOmode type="SM96" />        <!-- Model for the X_CO factor; options: SM96, galprop_2004, galprop_2010, constant --> 
+   <!--
+   <XCOmode type="Constant">
+      <XCO_constant value="1." />
+   </XCOmode>
+   -->  
+   <Diffusion type="Constant"> <!-- Spatial distribution of the diffusion coefficient; options: Constant, Exp, Qtau -->
+	<!-- In Constant mode: D(Rigidity)   = beta^etaT * D0 * (Rigidity/4GV)^delta -->
+	<!-- In Exp mode:      D(Rigidity,z) = beta^etaT * D0 * (Rigidity/4GV)^delta * exp(z/zt) -->
+        <D0_1e28 value="2.7" />   <!-- Normalization of the diffusion coefficient at reference rigidity DiffRefRig Unit: 10^28 cm^2/s -->
+        <DiffRefRig value = "4" /> <!-- Reference rigidity for the normalization of the diffusion coefficient -->
+	<!-- NOTE: the reference rigidity 4 GV is stored in the const D_ref_rig defined in include/constants.h --> 
+        <Delta value="0.6" />    <!-- Slope of the diffusion coefficient spectrum -->
+        <zt value="4" />          <!-- Scale heigth of the diffusion coefficient, useful in Exp mode: D(z) \propto exp(z/zt) (optional) -->
+        <etaT value="1." />       <!-- Low energy correction factor of the diffusion coefficient: D \propto beta^etaT  -->
+   </Diffusion>
+   <Reacceleration type="Ptuskin94"> <!-- Optional block -->
+      <vA_kms value="0." />          <!-- Alfvén velocity in km/s -->
+   </Reacceleration>
+   <CrossSection type="GalpropXSec" leptopt="Kamae" ApCs="2" />  <!-- Model for cross sections. leptopt is the model for electron and positron production; options: Kamae, GalpropTable -->
+<!-- ************************** -->
+  <MagneticField type="Pshirkov"> <!-- Model for the magnetic field. Options: Pshirkov, Farrar, Uniform, Toymodel -->
+     <B0disk value="2.e-06" /> <!-- Useful for Pshirkov field: halo regular field normalization in Gauss -->
+     <B0halo value="4.e-06" /> <!-- Useful for Pshirkov field: turbulent regular field normalization in Gauss -->
+     <B0turb value="12.e-06" />
+  </MagneticField>
+   <!-- NOTE: in Uniform mode, B0turb value is used as the only value, Uniform through the Galaxy -->
+   <!-- 
+   <MagneticField type="ToyModel">
+      <bx value = "1.e-6" />
+      <by value = "0." />
+      <bz value = "0." />
+      <bturb value = "1.e-6" />
+   </Toymodel>
+--> 
+<!-- ************************** -->
+</Galaxy>
+<CR>
+    <ProtNormEn_GeV value="100" />  <!-- Reference energy for nuclei normalization in GeV -->
+    <ElNormEn_GeV value="33." />   <!-- Reference energy for primary electron normalization in GeV --> 
+    <ProtNormFlux value="5.e-2" />  <!-- Proton flux at reference energy   for normalization; in DRAGON units: GeV^-1 m^-2 s^-1 sr^-1 -->
+    <ElNormFlux value="0.004" />   <!-- Electron flux at reference energy for normalization; in DRAGON units: GeV^-1 m^-2 s^-1 sr^-1 -->
+    <ElNormEnExtra_GeV value="300" />     <!-- Reference energy for primary electron extra component normalization in GeV -->
+    <ElNormFluxExtra value="1.e-06" />  <!-- Extra component flux at reference energy; in DRAGON units: GeV^-1 m^-2 s^-1 sr^-1 -->
+<!-- ************************** -->
+    <InjectionIndexAllNuclei>  <!-- You can add an arbitrary number of breaks!! -->    
+      <alpha_0 value="2.2" />  <!-- First injection slope for nuclei -->
+      <rho_0 value="1." />     <!-- Position of first break (rigidity) in GV -->    
+      <alpha_1 value="2.2" />  <!-- Second injection slope for nuclei -->
+      <rho_1 value="11." />    <!-- Position of second break (rigidity) in GV --> 
+      <alpha_2 value="2.2" /> 
+      <rho_2 value="111." />
+      <alpha_3 value="2.2" />
+    </InjectionIndexAllNuclei>
+<!-- ************************** -->
+    <InjectionIndexElectrons>   <!-- You can add an arbitrary number of breaks!! -->
+      <alpha_0 value="1.60" />  <!-- First injection slope for electrons -->
+      <rho_0 value="1." />      <!-- Position of first break (rigidity) in GV -->  
+      <alpha_1 value="1.60" />  <!-- Second injection slope for electrons --> 
+      <rho_1 value="5." />      <!-- Position of second break (rigidity) in GV -->
+      <alpha_2 value="2.50" />
+      <rho_2 value="10." />
+      <alpha_3 value="2.50" />
+      <CutoffRigEl value="10000" />  <!-- Energy of exp cutoff for electrons, in GeV -->
+    </InjectionIndexElectrons>
+<!-- ************************** -->
+    <InjectionIndexExtraComponent>
+       <rho_0 value="1." />
+       <rho_1 value="4." />
+       <rho_2 value="10." />
+       <alpha_0 value="1.70" />
+       <alpha_1 value="1.70" />
+       <alpha_2 value="1.70" />
+       <alpha_3 value="1.70" />
+       <CutoffRigExtra value="10000." /> 
+    </InjectionIndexExtraComponent>    
+</CR>

@@ -1,2 +1,2 @@
 # DRAGON
-First version of the code - last update Dec 2015
+Diffusion Reacceleration and Advection of Galactic cosmic rays: an Open New code
