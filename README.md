@@ -14,37 +14,39 @@ Some parts of DRAGON are built following [GALPROP](http://galprop.stanford.edu/)
  
 ## Installation
 
-DRAGON comes with one library and one executable. The library contains the whole structure that is used to solve the CR propagation equation, and can be linked against other programs exploiting DRAGON classes. The executable is the result of coupling the DRAGON library with a driver routine, which reads user's input and solves the transport equation.
- 
-DRAGON requires [GSL](http://www.gnu.org/software/gsl/) libraries and the [CFITSIO](http://heasarc.gsfc.nasa.gov/fitsio/).
- 
+Get the latest version of the code here and untar it.
+
+To install DRAGON you need to download and install the [GSL](http://www.gnu.org/software/gsl/) libraries and [CFITSIO](http://heasarc.gsfc.nasa.gov/fitsio/) library first.
+
 It also optionally requires [DarkSUSY](http://www.physto.se/~edsjo/darksusy/), if user wants to propagate DM originated cosmic rays.
+
+Before installing the code launch the script to initialize installation tools:
+
+`./start.sh`
+
+Configure the code, a typical command line is:
+
+`./configure --with-cfitsio=$CFITSIO_DIR --with-numcpu=2`
  
-Step 1:  Download and untar the code.
-
-`tar xfz DRAGON.tar.gz`
- 
-Step 2: Run the configure macro. 
-Configure needs some input from the user. User must tell configure where some external libraries are located.
-A typical command line is:
-
-`./configure --with-gsl-path=<PATH_TO_GSL_EXEC> --with-cfitsio-include=<PATH_TO_CFITSIO_INCLUDE_FILES> --with-cfitsio-library=<PATH_TO_CFITSIO_LIBRARY>`
- 
-This will preset DRAGON to propagate astrophysically generated cosmic rays. 
-If user wants instead to propagate DM originated cosmic rays, then he should configure with the following command line:
-
-`./configure --with-gsl-path=<PATH_TO_GSL_EXEC> --with-cfitsio-include=<PATH_TO_CFITSIO_INCLUDE_FILES> --with-cfitsio-library=<PATH_TO_CFITSIO_LIBRARY> --with-ds-include=<PATH_TO_DARKSUSY_INCLUDE_FILES> --with-ds-library=<PATH_TO_DARKSUSY_LIBRARY_FILES>`
-
-In this case DRAGON will only propagate DM originated cosmic rays. 
+where `$CFITSIO_DIR` is the path of your cfitsio library and `NUMCPU` is the machine core number.
 
 The default installation path is in the same folder as the source code is (the program automatically creates the `bin/` and `lib/` subfolders). It can be set via `--prefix=<NEW_INSTALLATION_PATH>`
 
-Step 3: Compile the code.
-Just run make and make install. The executable will be in $PREFIX/bin.
+Finally create the executable:
 
-Step 4: Run DRAGON.
+`make`
 
-`$PREFIX/bin/%DRAGON <xml_file>`
+Run the example models in the examples/ directory:
+
+`./DRAGON examples/run_2D.xml` 
+
+or
+
+`./DRAGON examples/run_3D.xml` 
+
+A detailed description of the input XML file and some examples can be found here.
+ 
+Please let us know for any problem with installation!
 
 ## CREDITS
 
