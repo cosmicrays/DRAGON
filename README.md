@@ -44,7 +44,7 @@ or
 
 `./DRAGON examples/run_3D.xml` 
 
-A detailed description of the input XML file and some examples can be found here.
+A detailed description of the input XML file and some examples can be found [here](https://indico.desy.de/indico/event/10336/contribution/2/material/slides/0.pdf).
  
 Please let us know for any problem with installation!
 
